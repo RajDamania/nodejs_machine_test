@@ -1,13 +1,12 @@
-import { Box, Button, Text, Input, Stack, HStack } from "@chakra-ui/react";
+import { Box, Button, Heading, Input, Stack, HStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import axios from "axios";
 
 const Update = () => {
   let history = useHistory();
   const [newProduct, setNewProduct] = useState({
     title: "",
-    category: "",
   });
 
   const { id } = useParams();
@@ -29,30 +28,19 @@ const Update = () => {
   };
 
   const loadProd = async () => {
-    const result = await axios.get(`http://localhost:5000/${id}`);
+    const result = await axios.get(`http://localhost:5000/products/edit/${id}`);
     console.log(result.data);
     setNewProduct(result.data);
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    const { title, category } = newProduct;
-    fetch(`http://localhost:5000/${id}`, {
-      method: "POST",
-      body: JSON.stringify(newProduct),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseData) => {
-        setNewProduct((prevProd) => [
-          ...prevProd,
-          { id: responseData.name, ...newProduct },
-        ]);
-      })
-      .catch((err) => console.log(err));
-    history.push("/");
+    await axios.post(`http://localhost:5000/products/edit/${id}`, newProduct);
+    setNewProduct({
+      title: "",
+    });
+
+    history.push("/products");
   };
 
   return (
@@ -67,7 +55,9 @@ const Update = () => {
           rounded="lg"
           bg="gray.300"
         >
-          <Text align="center">Update product</Text>
+          <Heading size="lg" align="center">
+            Edit product Title
+          </Heading>
           <form method="POST">
             <Stack spacing={5} mt={4}>
               <Input
@@ -79,17 +69,9 @@ const Update = () => {
                 bgColor="white"
                 onChange={handleUpdateChange}
               />
-              <Input
-                type="text"
-                name="category"
-                id="category"
-                value={newProduct.category}
-                placeholder="Category"
-                bgColor="white"
-                onChange={handleUpdateChange}
-              />
+
               <Button onClick={onSubmit} type="submit" colorScheme="teal">
-                Update Product
+                Update Title
               </Button>
             </Stack>
           </form>

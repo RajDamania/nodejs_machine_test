@@ -18,7 +18,7 @@ const Product = (props) => {
   return (
     <>
       <Flex>
-        <Box w="250px" h="20vh" bg="gray.300" boxShadow="md" rounded="lg">
+        <Box w="250px" h="35vh" bg="gray.200" boxShadow="md" rounded="lg">
           <Box
             mt="1"
             fontWeight="semibold"
@@ -29,17 +29,34 @@ const Product = (props) => {
           >
             <Stack pt="10px">
               <Heading fontSize="sm">{props.title}</Heading>
-              <Text fontSize="sm">Category:{props.category}</Text>
+              <Text fontSize="sm">{props.category}</Text>
             </Stack>
           </Box>
-
+          <Stack pt="10px" align="center" justify="center">
+            <Link to={`/products/${props.id}/productsCategories`}>
+              <Button
+                size="xs"
+                fontSize="14px"
+                fontWeight="semibold"
+                variant="outline"
+                colorScheme="black"
+              >
+                Add Category
+              </Button>
+            </Link>
+          </Stack>
           <HStack spacing="24px" m="20px" justify="center">
-            <Link to={`/${props.id}`}>
-              <Button colorScheme="teal" size="sm">
+            <Link to={`/products/edit/${props.id}`}>
+              <Button variant="outline" colorScheme="teal" size="sm">
                 Edit
               </Button>
             </Link>
-            <Button onClick={handleClick} colorScheme="teal" size="sm">
+            <Button
+              variant="outline"
+              onClick={handleClick}
+              colorScheme="teal"
+              size="sm"
+            >
               Delete
             </Button>
           </HStack>

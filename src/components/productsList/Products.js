@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Flex, Heading, HStack, Grid } from "@chakra-ui/react";
-import Product from "./productsList/Product";
-import Create from "./Create";
-import { ProdContext } from "../store/ProdContext";
+import Product from "./Product";
+import { ProdContext } from "../../store/ProdContext";
 
 const Products = () => {
   const { prod } = React.useContext(ProdContext);
@@ -12,8 +11,9 @@ const Products = () => {
 
   const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
 
+  //fetching all products
   useEffect(() => {
-    fetch(`http://localhost:5000/prods/?page=${pageNumber}`)
+    fetch(`http://localhost:5000/products/?page=${pageNumber}`)
       .then((res) => res.json())
       .then(({ totalPages, prods }) => {
         console.log(totalPages, prods);
@@ -23,30 +23,9 @@ const Products = () => {
       .catch((err) => console.log(err));
   }, [pageNumber, setUserProd, setNumberOfPages]);
 
-  //creating Product
-  const addChangeHandler = (prods) => {
-    fetch("http://localhost:5000/add", {
-      method: "POST",
-      body: JSON.stringify(prods),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseData) => {
-        setUserProd((prevProd) => [
-          ...prevProd,
-          { id: responseData.name, ...prods },
-        ]);
-      })
-      .catch((err) => console.log(err));
-
-    console.log(prods);
-  };
-
   //Deleting Product
   const removeProd = (id) => {
-    fetch(`http://localhost:5000/delete/${id}`, {
+    fetch(`http://localhost:5000/products/delete/${id}`, {
       method: "DELETE",
     }).then((response) => {
       setUserProd((prevProd) => {
@@ -62,12 +41,9 @@ const Products = () => {
   return (
     <>
       <Flex direction="column" align="center">
-        <Create onAdd={addChangeHandler} />
-        <Heading mt={2} p="4px">
-          product list
-        </Heading>
+        <Heading>product list</Heading>
       </Flex>
-      <Grid ml={12} gap={10} templateColumns="repeat(4, 1fr)">
+      <Grid mt={5} ml={12} gap={10} templateColumns="repeat(4, 1fr)">
         {userProd.map((prod, _id) => {
           return (
             <Product
